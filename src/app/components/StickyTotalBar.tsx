@@ -57,15 +57,15 @@ export default function StickyTotalBar() {
   };
 
   return (
-    <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 print:hidden">
+    <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 print:hidden max-w-[calc(100vw-120px)] sm:max-w-none">
       <a
         href="#total-cost"
-        className="bg-gradient-to-r from-orange-500 to-green-600 text-white rounded-full px-4 sm:px-5 py-2.5 sm:py-3 shadow-lg hover:shadow-xl transition-all flex items-center gap-2 sm:gap-3 no-underline"
+        className="bg-gradient-to-r from-orange-500 to-green-600 text-white rounded-full px-3 sm:px-5 py-2 sm:py-3 shadow-lg hover:shadow-xl transition-all flex items-center gap-1.5 sm:gap-3 no-underline"
       >
-        <span className="text-[10px] sm:text-xs font-medium text-white/80">
+        <span className="text-[9px] sm:text-xs font-medium text-white/80">
           Total
         </span>
-        <span className="text-sm sm:text-base font-bold">
+        <span className="text-xs sm:text-base font-bold truncate">
           {symbol}{fmt(totalLow)} – {symbol}{fmt(totalHigh)}
         </span>
       </a>
