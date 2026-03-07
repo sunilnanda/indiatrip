@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-saffron: #FF6F00;
+  --color-saffron-light: #FF9933;
+  --color-india-green: #046A38;
+  --color-india-green-light: #0a8f4f;
+  --color-navy: #000080;
+  --color-gold: #D4A843;
+  --color-cream: #FFF8F0;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #FFF8F0;
+  color: #1a1a2e;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #FF9933; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #FF6F00; }
+
+/* Print Styles */
+@media print {
+  body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .print\:hidden { display: none !important; }
+  .print\:block { display: block !important; }
+  nav, footer, .scroll-indicator, button[title="Toggle currency"] { display: none !important; }
+  section:not(#summary) { display: none !important; }
+  .hidden.print\:block { display: block !important; }
+  @page { margin: 1cm; size: A4; }
+}
