@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { delhiToJalandharTransport, delhiToChandigarhTransport } from "../data";
+import { delhiToJalandharTransport, vrindavanToChandigarhTransport } from "../data";
 import TransportOptions from "./TransportOptions";
 
 export default function SplitSection() {
@@ -40,7 +40,7 @@ export default function SplitSection() {
               </p>
             </div>
             <TransportOptions
-              options={delhiToChandigarhTransport}
+              options={vrindavanToChandigarhTransport}
               title="Delhi → Chandigarh Options"
               legId="delhi-chandigarh"
             />

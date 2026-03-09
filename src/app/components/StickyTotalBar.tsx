@@ -18,7 +18,6 @@ const costLegs = [
   { legId: "day8", fixedIndex: undefined as number | undefined },
   { legId: "delhi-jalandhar", fixedIndex: undefined as number | undefined },
   { legId: "delhi-chandigarh", fixedIndex: undefined as number | undefined },
-  { legId: "eye-surgery", fixedIndex: undefined as number | undefined },
   { legId: "himachal", fixedIndex: undefined as number | undefined },
   { legId: "himachal", fixedIndex: 1 },
   { legId: "chandigarh", fixedIndex: undefined as number | undefined },

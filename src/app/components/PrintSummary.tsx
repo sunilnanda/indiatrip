@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { Printer, Plane, MapPin, Calendar, Users, Train, Car } from "lucide-react";
-import { flights, itinerary, flexiblePlans, delhiToJalandharTransport, delhiToChandigarhTransport } from "../data";
+import { flights, itinerary, flexiblePlans, delhiToJalandharTransport, vrindavanToChandigarhTransport } from "../data";
 import { useCurrency } from "./CurrencyContext";
 
 export default function PrintSummary() {
@@ -135,15 +135,15 @@ export default function PrintSummary() {
             </div>
           </div>
 
-          {/* Split from Delhi */}
+          {/* Group Splits */}
           <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
             <h4 className="text-xs sm:text-sm font-bold text-gray-700 flex items-center gap-2 mb-2 sm:mb-3">
               <Users className="w-4 h-4 text-orange-500" />
-              Group Split from Delhi (7 April)
+              Group Splits
             </h4>
             <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="bg-violet-50 rounded-xl p-2.5 sm:p-3">
-                <p className="text-[10px] sm:text-xs font-bold text-violet-700 mb-1.5 sm:mb-2">Sunil&apos;s Family + Parents → Jalandhar</p>
+                <p className="text-[10px] sm:text-xs font-bold text-violet-700 mb-1.5 sm:mb-2">Sunil&apos;s Family (6 pax) — Dham → Delhi → Jalandhar</p>
                 {delhiToJalandharTransport.map((t, i) => {
                   const Icon = t.mode === "train" ? Train : t.mode === "flight" ? Plane : Car;
                   return (
@@ -156,8 +156,8 @@ export default function PrintSummary() {
                 })}
               </div>
               <div className="bg-pink-50 rounded-xl p-2.5 sm:p-3">
-                <p className="text-[10px] sm:text-xs font-bold text-pink-700 mb-1.5 sm:mb-2">Parul&apos;s Parents → Chandigarh</p>
-                {delhiToChandigarhTransport.map((t, i) => {
+                <p className="text-[10px] sm:text-xs font-bold text-pink-700 mb-1.5 sm:mb-2">Parul&apos;s Parents — Vrindavan → Chandigarh (4 Apr)</p>
+                {vrindavanToChandigarhTransport.map((t, i) => {
                   const Icon = t.mode === "train" ? Train : t.mode === "flight" ? Plane : Car;
                   return (
                     <div key={i} className="flex items-center gap-1 sm:gap-1.5 mb-0.5 sm:mb-1">
@@ -284,17 +284,17 @@ export default function PrintSummary() {
 
           {/* Print Split */}
           <div className="mb-4">
-            <h3 className="text-sm font-bold text-gray-800 border-b border-gray-200 pb-1 mb-2">👥 Group Split from Delhi (7 April)</h3>
+            <h3 className="text-sm font-bold text-gray-800 border-b border-gray-200 pb-1 mb-2">👥 Group Splits</h3>
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
-                <p className="font-bold mb-1">Sunil&apos;s Family → Jalandhar (Hometown)</p>
+                <p className="font-bold mb-1">Sunil&apos;s Family (6 pax) — Dham → Delhi → Jalandhar</p>
                 {delhiToJalandharTransport.map((t, i) => (
                   <p key={i}>{t.mode === "train" ? "🚆" : t.mode === "flight" ? "✈️" : "🚗"} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
                 ))}
               </div>
               <div>
-                <p className="font-bold mb-1">Parul&apos;s Parents → Chandigarh</p>
-                {delhiToChandigarhTransport.map((t, i) => (
+                <p className="font-bold mb-1">Parul&apos;s Parents — Vrindavan → Chandigarh (4 Apr)</p>
+                {vrindavanToChandigarhTransport.map((t, i) => (
                   <p key={i}>{t.mode === "train" ? "🚆" : t.mode === "flight" ? "✈️" : "🚗"} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
                 ))}
               </div>

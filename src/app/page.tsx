@@ -1,4 +1,5 @@
 import Hero from "./components/Hero";
+import Countdown from "./components/Countdown";
 import Navbar from "./components/Navbar";
 import FlightCards from "./components/FlightCards";
 import Overview from "./components/Overview";
@@ -19,6 +20,7 @@ export default function Home() {
       <TransportSelectionProvider>
       <main>
         <Hero />
+        <Countdown />
         <Navbar />
         <FlightCards />
         <Overview />
