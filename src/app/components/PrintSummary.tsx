@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { Printer, Plane, MapPin, Calendar, Users, Train, Car } from "lucide-react";
-import { flights, itinerary, flexiblePlans, delhiToJalandharTransport, vrindavanToChandigarhTransport } from "../data";
+import { flights, itinerary, flexiblePlans, delhiToJalandharTransport, vrindavanToChandigarhTransport, routeStops } from "../data";
 import { useCurrency } from "./CurrencyContext";
 
 export default function PrintSummary() {
@@ -75,10 +75,93 @@ export default function PrintSummary() {
             </div>
           </div>
 
-          {/* Day-by-Day Summary Table */}
+          {/* Route Timeline */}
           <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
             <h4 className="text-xs sm:text-sm font-bold text-gray-700 flex items-center gap-2 mb-2 sm:mb-3">
               <Calendar className="w-4 h-4 text-orange-500" />
+              Route Timeline
+            </h4>
+
+            {/* Mobile: card layout */}
+            <div className="sm:hidden space-y-0">
+              {routeStops.map((stop, idx) => (
+                <div key={stop.city + idx} className="flex gap-2.5">
+                  {/* Timeline rail */}
+                  <div className="flex flex-col items-center flex-shrink-0 pt-0.5">
+                    <div
+                      className="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-2 ring-white"
+                      style={{ backgroundColor: stop.color }}
+                    />
+                    {idx < routeStops.length - 1 && (
+                      <div className="w-px flex-1 min-h-[16px] bg-gray-200" />
+                    )}
+                  </div>
+                  {/* Content */}
+                  <div className="pb-3.5 -mt-0.5 flex-1 min-w-0">
+                    <div className="flex items-baseline gap-1.5 flex-wrap">
+                      <span className="text-[11px] font-semibold text-gray-800 leading-tight">{stop.city}</span>
+                      <span className="text-[10px] font-medium text-gray-400">{stop.dates}</span>
+                    </div>
+                    <div className="mt-1 space-y-0.5">
+                      {stop.timeline.map((step, j) => {
+                        const hasTime = /^\d|^~\d/.test(step);
+                        return (
+                          <p key={j} className={`text-[10px] leading-relaxed ${hasTime ? "text-gray-600 font-mono" : "text-gray-400 italic"}`}>
+                            {step}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop: table layout */}
+            <div className="hidden sm:block">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-2 pr-3 text-xs font-semibold text-gray-400 uppercase w-[100px]">Date</th>
+                    <th className="text-left py-2 pr-3 text-xs font-semibold text-gray-400 uppercase w-[200px]">Leg</th>
+                    <th className="text-left py-2 text-xs font-semibold text-gray-400 uppercase">Timings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {routeStops.map((stop, idx) => (
+                    <tr key={stop.city + idx} className="border-b border-gray-50 align-top hover:bg-gray-50/50 transition-colors">
+                      <td className="py-2.5 pr-3 whitespace-nowrap">
+                        <span className="text-xs font-semibold text-gray-700">{stop.dates}</span>
+                      </td>
+                      <td className="py-2.5 pr-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: stop.color }} />
+                          <span className="text-xs font-medium text-gray-800">{stop.city}</span>
+                        </div>
+                      </td>
+                      <td className="py-2.5">
+                        <div className="space-y-0.5">
+                          {stop.timeline.map((step, j) => {
+                            const hasTime = /^\d|^~\d/.test(step);
+                            return (
+                              <p key={j} className={`text-xs leading-relaxed ${hasTime ? "text-gray-600 font-mono" : "text-gray-400 italic"}`}>
+                                {step}
+                              </p>
+                            );
+                          })}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Day-by-Day Summary Table */}
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
+            <h4 className="text-xs sm:text-sm font-bold text-gray-700 flex items-center gap-2 mb-2 sm:mb-3">
+              <MapPin className="w-4 h-4 text-orange-500" />
               Itinerary Overview
             </h4>
             <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
@@ -143,7 +226,7 @@ export default function PrintSummary() {
             </h4>
             <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="bg-violet-50 rounded-xl p-2.5 sm:p-3">
-                <p className="text-[10px] sm:text-xs font-bold text-violet-700 mb-1.5 sm:mb-2">Sunil&apos;s Family (6 pax) — Dham → Delhi → Jalandhar</p>
+                <p className="text-[10px] sm:text-xs font-bold text-violet-700 mb-1.5 sm:mb-2">Sunil&apos;s Family (6 persons) — Dham → Delhi → Jalandhar</p>
                 {delhiToJalandharTransport.map((t, i) => {
                   const Icon = t.mode === "train" ? Train : t.mode === "flight" ? Plane : Car;
                   return (
@@ -249,6 +332,33 @@ export default function PrintSummary() {
             </div>
           </div>
 
+          {/* Print Route Timeline */}
+          <div className="mb-4">
+            <h3 className="text-sm font-bold text-gray-800 border-b border-gray-200 pb-1 mb-2">🕐 Route Timeline</h3>
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="text-left p-1.5 border border-gray-200 font-semibold w-[80px]">Date</th>
+                  <th className="text-left p-1.5 border border-gray-200 font-semibold w-[140px]">Leg</th>
+                  <th className="text-left p-1.5 border border-gray-200 font-semibold">Timings</th>
+                </tr>
+              </thead>
+              <tbody>
+                {routeStops.map((stop, idx) => (
+                  <tr key={stop.city + idx}>
+                    <td className="p-1.5 border border-gray-200 whitespace-nowrap font-medium align-top">{stop.dates}</td>
+                    <td className="p-1.5 border border-gray-200 font-medium align-top">{stop.city}</td>
+                    <td className="p-1.5 border border-gray-200 align-top">
+                      {stop.timeline.map((step, j) => (
+                        <div key={j}>{step}</div>
+                      ))}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
           {/* Print Itinerary Table */}
           <div className="mb-4">
             <h3 className="text-sm font-bold text-gray-800 border-b border-gray-200 pb-1 mb-2">📅 Day-by-Day Itinerary</h3>
@@ -287,7 +397,7 @@ export default function PrintSummary() {
             <h3 className="text-sm font-bold text-gray-800 border-b border-gray-200 pb-1 mb-2">👥 Group Splits</h3>
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
-                <p className="font-bold mb-1">Sunil&apos;s Family (6 pax) — Dham → Delhi → Jalandhar</p>
+                <p className="font-bold mb-1">Sunil&apos;s Family (6 persons) — Dham → Delhi → Jalandhar</p>
                 {delhiToJalandharTransport.map((t, i) => (
                   <p key={i}>{t.mode === "train" ? "🚆" : t.mode === "flight" ? "✈️" : "🚗"} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
                 ))}
