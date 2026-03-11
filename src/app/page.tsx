@@ -1,5 +1,3 @@
-import Hero from "./components/Hero";
-import Countdown from "./components/Countdown";
 import Navbar from "./components/Navbar";
 import FlightCards from "./components/FlightCards";
 import Overview from "./components/Overview";
@@ -12,28 +10,30 @@ import Footer from "./components/Footer";
 import { CurrencyProvider } from "./components/CurrencyContext";
 import { TransportSelectionProvider } from "./components/TransportSelectionContext";
 import CurrencyToggle from "./components/CurrencyToggle";
+import BookingChecklist from "./components/BookingChecklist";
+import Notes from "./components/Notes";
 import StickyTotalBar from "./components/StickyTotalBar";
 
 export default function Home() {
-  return (
-    <CurrencyProvider>
-      <TransportSelectionProvider>
-      <main>
-        <Hero />
-        <Countdown />
-        <Navbar />
-        <FlightCards />
-        <Overview />
-        <Travelers />
-        <Timeline />
-        <FlexiblePlans />
-        <PrintSummary />
-        <TotalCost />
-        <Footer />
-        <CurrencyToggle />
-        <StickyTotalBar />
-      </main>
-      </TransportSelectionProvider>
-    </CurrencyProvider>
-  );
+    return (
+        <CurrencyProvider>
+            <TransportSelectionProvider>
+                <main>
+                    <Navbar />
+                    <FlightCards />
+                    <Overview />
+                    {/* <Travelers /> */}
+                    <Timeline />
+                    <FlexiblePlans />
+                    <BookingChecklist />
+                    <Notes />
+                    <PrintSummary />
+                    <TotalCost />
+                    <Footer />
+                    <CurrencyToggle />
+                    <StickyTotalBar />
+                </main>
+            </TransportSelectionProvider>
+        </CurrencyProvider>
+    );
 }
