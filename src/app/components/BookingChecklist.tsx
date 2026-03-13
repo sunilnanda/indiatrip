@@ -34,24 +34,42 @@ const checklist: ChecklistItem[] = [
     id: "flight-gwl-del",
     category: "flight",
     label: "Gwalior → Delhi flight",
-    detail: "IndiGo 6E 6455 · A320neo · 7 Apr · GWL 3:30 PM → DEL 4:35 PM",
+    detail: "IndiGo 6E 6455 · A320 · 7 Apr · GWL 15:30 → DEL T1 16:35 · PNR V9Q5SJ · ₹18,054",
     date: "7 Apr",
     preBooked: true,
   },
   // Trains
   {
+    id: "train-parents-juc-ndls",
+    category: "train",
+    label: "Parents: Jalandhar → Delhi",
+    detail: "12014 Amritsar Shatabdi · 31 Mar · JUC 06:01 → NDLS 11:02 · CC · PNR 2732874627 · ₹1,899",
+    date: "31 Mar",
+    preBooked: true,
+  },
+  {
     id: "train-mathura-dham",
     category: "train",
-    label: "Mathura → Lalitpur/Bina train tickets",
-    detail: "18238 Chhattisgarh Exp · 4 Apr · Mathura dep 06:30 · 2AC/1AC · 6 persons · alight Lalitpur or Bina",
+    label: "Mathura → Lalitpur train (6 persons)",
+    detail: "12002 Shatabdi Express · 4 Apr · MTJ 07:20 → LAR 11:42 · CC · PNR 2514096012 · ₹7,348",
     date: "4 Apr",
+    preBooked: true,
+  },
+  {
+    id: "train-mathura-chd",
+    category: "train",
+    label: "Parul's Parents: Mathura → Chandigarh",
+    detail: "12925 Paschim Express · 4 Apr · MTJ 07:35 → CDG 15:23 · 1A · PNR 8145795505 · WAITLISTED",
+    date: "4 Apr",
+    preBooked: false,
   },
   {
     id: "train-del-jal",
     category: "train",
-    label: "Delhi → Jalandhar train tickets",
-    detail: "12029 Swarna Shatabdi · 8 Apr · New Delhi dep 7:20 AM · CC/EC · 6 persons",
+    label: "Delhi → Jalandhar train (6 persons)",
+    detail: "12029 Swarn Shatabdi · 8 Apr · NDLS 07:20 → JUC 12:06 · CC · PNR 2732876330 · ₹6,243",
     date: "8 Apr",
+    preBooked: true,
   },
   // Taxi / Transport
   {
@@ -66,21 +84,21 @@ const checklist: ChecklistItem[] = [
     id: "taxi-vrindavan-mathura",
     category: "taxi",
     label: "Vrindavan → Mathura Jn taxi",
-    detail: "~05:00 AM · 4 Apr · ~15 km (train dep 06:30)",
+    detail: "~06:00 AM · 4 Apr · ~15 km (train dep 07:20)",
     date: "4 Apr",
   },
   {
     id: "taxi-station-dham",
     category: "taxi",
-    label: "Lalitpur/Bina → Sri Anandpur Dham taxi",
-    detail: "4 Apr · Lalitpur ~80 km (₹2,500–3,500) or Bina ~115 km (₹2,000–3,000)",
+    label: "Lalitpur → Sri Anandpur Dham taxi",
+    detail: "4 Apr · Lalitpur arr 11:42 · ~80 km (~2h) · ₹2,500–3,500",
     date: "4 Apr",
   },
   {
     id: "taxi-dham-gwalior",
     category: "taxi",
     label: "Dham → Gwalior Airport taxi",
-    detail: "7 Apr · ~230 km · ₹5,000–7,000",
+    detail: "7 Apr · ~230 km · ₹3,000",
     date: "7 Apr",
   },
   {
@@ -100,8 +118,8 @@ const checklist: ChecklistItem[] = [
   {
     id: "taxi-parul-parents",
     category: "taxi",
-    label: "Parul's parents: Vrindavan → Chandigarh",
-    detail: "4 Apr · 2 persons · taxi or train",
+    label: "Parul's parents: Vrindavan → Mathura Jn taxi",
+    detail: "4 Apr · ~15 km · drop at Mathura Jn for 12925 Paschim Exp (07:35)",
     date: "4 Apr",
   },
   // Stays
@@ -171,7 +189,7 @@ const categoryConfig = {
   other: { icon: CreditCard, label: "Other", color: "text-gray-500", bg: "bg-gray-50" },
 };
 
-const STORAGE_KEY = "indiatrip-checklist";
+const STORAGE_KEY = "indiatrip-checklist-v2";
 
 export default function BookingChecklist() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
@@ -181,7 +199,15 @@ export default function BookingChecklist() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        setChecked(JSON.parse(saved));
+        const parsed = JSON.parse(saved) as Record<string, boolean>;
+        // Ensure any new preBooked items are also checked
+        const merged: Record<string, boolean> = { ...parsed };
+        checklist.forEach((item) => {
+          if (item.preBooked && !(item.id in merged)) {
+            merged[item.id] = true;
+          }
+        });
+        setChecked(merged);
       } else {
         // Pre-check items marked as preBooked
         const initial: Record<string, boolean> = {};
