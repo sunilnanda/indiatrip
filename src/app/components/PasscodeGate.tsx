@@ -57,48 +57,20 @@ export default function PasscodeGate({ children }: { children: React.ReactNode }
     }
   };
 
-  // Don't render anything until we've checked sessionStorage
   if (!checked) return null;
-
-  // Only render children after passcode is verified
   if (unlocked) return <>{children}</>;
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "linear-gradient(135deg, #1e3a5f 0%, #0f1f33 100%)",
-      fontFamily: "var(--font-geist-sans), sans-serif",
-    }}>
-      <div style={{
-        background: "rgba(255,255,255,0.07)",
-        backdropFilter: "blur(20px)",
-        borderRadius: "24px",
-        padding: "48px 40px",
-        textAlign: "center",
-        border: "1px solid rgba(255,255,255,0.1)",
-        boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-      }}>
-        <div style={{ fontSize: "48px", marginBottom: "16px" }}>🔒</div>
-        <h1 style={{
-          color: "#fff",
-          fontSize: "24px",
-          fontWeight: 600,
-          margin: "0 0 8px 0",
-        }}>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#1e3a5f] to-[#0f1f33] px-4">
+      <div className="bg-white/[0.07] backdrop-blur-xl rounded-3xl p-8 sm:p-12 text-center border border-white/10 shadow-2xl w-full max-w-sm">
+        <div className="text-5xl mb-4">🔒</div>
+        <h1 className="text-white text-xl sm:text-2xl font-semibold mb-2">
           India Trip Planner
         </h1>
-        <p style={{
-          color: "rgba(255,255,255,0.5)",
-          fontSize: "14px",
-          margin: "0 0 32px 0",
-        }}>
+        <p className="text-white/50 text-sm mb-8">
           Enter passcode to continue
         </p>
-        <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+        <div className="flex gap-3 justify-center" role="group" aria-label="Passcode input">
           {code.map((digit, i) => (
             <input
               key={i}
@@ -109,49 +81,23 @@ export default function PasscodeGate({ children }: { children: React.ReactNode }
               value={digit}
               onChange={(e) => handleChange(i, e.target.value)}
               onKeyDown={(e) => handleKeyDown(i, e)}
-              style={{
-                width: "56px",
-                height: "64px",
-                textAlign: "center",
-                fontSize: "28px",
-                fontWeight: 700,
-                border: `2px solid ${error ? "#ef4444" : digit ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)"}`,
-                borderRadius: "14px",
-                background: "rgba(255,255,255,0.08)",
-                color: "#fff",
-                outline: "none",
-                transition: "all 0.2s",
-                caretColor: "transparent",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = error ? "#ef4444" : "#60a5fa";
-                e.target.style.boxShadow = `0 0 0 3px ${error ? "rgba(239,68,68,0.2)" : "rgba(96,165,250,0.2)"}`;
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = digit ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)";
-                e.target.style.boxShadow = "none";
-              }}
+              aria-label={`Digit ${i + 1}`}
+              className={`w-12 h-14 sm:w-14 sm:h-16 text-center text-2xl sm:text-3xl font-bold rounded-xl bg-white/[0.08] text-white outline-none transition-all caret-white/50 ${
+                error
+                  ? "border-2 border-red-500 focus:ring-2 focus:ring-red-500/30"
+                  : digit
+                    ? "border-2 border-white/40 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                    : "border-2 border-white/15 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+              }`}
             />
           ))}
         </div>
         {error && (
-          <p style={{
-            color: "#ef4444",
-            fontSize: "14px",
-            marginTop: "16px",
-            animation: "shake 0.3s ease-in-out",
-          }}>
+          <p className="text-red-400 text-sm mt-4 animate-shake" role="alert">
             Incorrect passcode
           </p>
         )}
       </div>
-      <style>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-8px); }
-          75% { transform: translateX(8px); }
-        }
-      `}</style>
     </div>
   );
 }

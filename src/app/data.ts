@@ -1,5 +1,5 @@
 export interface TransportOption {
-    mode: "flight" | "train" | "taxi";
+    mode: "flight" | "train" | "taxi" | "stay" | "medical";
     label: string;
     duration: string;
     costPerPerson: string;
@@ -8,6 +8,7 @@ export interface TransportOption {
     recommended?: boolean;
     booked?: boolean;
     details?: string;
+    link?: string;
 }
 
 export interface ItineraryDay {
@@ -128,13 +129,14 @@ export const itinerary: ItineraryDay[] = [
         color: "green",
         transport: [
             {
-                mode: "taxi",
+                mode: "stay",
                 label: "Vrindavan Homestay (4 nights)",
                 duration: "31 Mar – 4 Apr (Check-in 31 Mar, Checkout 4 Apr)",
                 costPerPerson: "–",
-                costTotal: "₹36,000",
+                costTotal: "₹28,000",
                 booked: true,
-                note: "Confirmed booking. Location: HMH3+2JW, Sunrakh Bangar, Vrindavan. 4 nights for full family.",
+                note: "Confirmed Airbnb booking. ₹7,000 deposit paid, ₹21,000 due at check-in. Location: HMH3+2JW, Sunrakh Bangar, Vrindavan. 4 nights for full family.",
+                link: "https://www.airbnb.com.au/rooms/1597553497929416930",
             },
         ],
     },
@@ -182,7 +184,7 @@ export const itinerary: ItineraryDay[] = [
         location: "Sri Anandpur Dham, Ashok Nagar, MP",
         description:
             "Arrive evening of 4th April and settle in. 3 nights at the ashram — attend spiritual sessions, engage with the community, and spend quality time with family. Depart morning of 7th April.",
-        tags: [{ label: "No Accommodation Cost", free: false }, { label: "6 persons" }, { label: "3 Nights" }],
+        tags: [{ label: "No Accommodation Cost", free: true }, { label: "6 persons" }, { label: "3 Nights" }],
         color: "gold",
     },
     {
@@ -269,7 +271,7 @@ export const itinerary: ItineraryDay[] = [
         color: "purple",
         transport: [
             {
-                mode: "taxi",
+                mode: "medical",
                 label: "Eye Surgery Cost (Both Eyes)",
                 duration: "~11 April + 5 – 7 days recovery",
                 costPerPerson: "–",
@@ -308,12 +310,12 @@ export const itinerary: ItineraryDay[] = [
                 note: "@ ₹18/km × 350 km. Jalandhar → Chintpurni (~120 km) → Deotsidh (~60 km) → Beh Nangal (~40 km) → Jalandhar. Seats 6 — fits all persons.",
             },
             {
-                mode: "taxi",
+                mode: "stay",
                 label: "Himachal Stay (1–2 nights)",
                 duration: "Near Chintpurni / Deotsidh",
                 costPerPerson: "–",
-                costTotal: "₹4,000 – ₹8,000",
-                note: "Hotels in Chintpurni ~₹4,000/night. 2 rooms for 6 persons = ₹8,000/night. 1–2 nights stay.",
+                costTotal: "₹8,000 – ₹16,000",
+                note: "Hotels in Chintpurni ~₹4,000/room/night. 2 rooms for 6 persons = ₹8,000/night. 1–2 nights stay.",
             },
         ],
     },
@@ -421,19 +423,6 @@ export const vrindavanToChandigarhTransport: TransportOption[] = [
     },
 ];
 
-export const parentsJalandharToDelhi: TransportOption[] = [
-    {
-        mode: "train",
-        label: "12014 Amritsar Shatabdi (Jalandhar → Delhi)",
-        duration: "~5h 01min (06:01 – 11:02)",
-        costPerPerson: "₹890",
-        costTotal: "₹1,899 (2 persons, all inclusive)",
-        recommended: true,
-        booked: true,
-        details: "PNR: 2732874627",
-        note: "AC Chair Car (CC). JUC dep 06:01 → NDLS arr 11:02. 2 persons: Ashok Nanda (C2/40 WS) & Anita Nanda (C2/41). Confirmed. Parents travel to Delhi on 31 Mar morning to receive family at airport.",
-    },
-];
 
 export const flexiblePlans: FlexiblePlan[] = [
     {
@@ -447,7 +436,7 @@ export const flexiblePlans: FlexiblePlan[] = [
         group: "Sunil",
         transport: [
             {
-                mode: "taxi",
+                mode: "medical",
                 label: "Eye Surgery Cost (Both Eyes)",
                 duration: "~11 April + 5 – 7 days recovery",
                 costPerPerson: "–",
@@ -477,12 +466,12 @@ export const flexiblePlans: FlexiblePlan[] = [
                 note: "@ ₹18/km × 350 km. Jalandhar → Chintpurni (~120 km) → Deotsidh (~60 km) → Beh Nangal (~40 km) → Jalandhar. Seats 6 — fits all persons.",
             },
             {
-                mode: "taxi",
+                mode: "stay",
                 label: "Himachal Stay (1–2 nights)",
                 duration: "Near Chintpurni / Deotsidh",
                 costPerPerson: "–",
-                costTotal: "₹4,000 – ₹8,000",
-                note: "Hotels in Chintpurni ~₹4,000/night. 2 rooms for 6 persons = ₹8,000/night. 1–2 nights stay.",
+                costTotal: "₹8,000 – ₹16,000",
+                note: "Hotels in Chintpurni ~₹4,000/room/night. 2 rooms for 6 persons = ₹8,000/night. 1–2 nights stay.",
             },
         ],
     },

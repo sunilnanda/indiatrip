@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, Circle, Plane, Train, Car, Hotel, FileText, CreditCard } from "lucide-react";
 
@@ -10,6 +10,7 @@ interface ChecklistItem {
   detail?: string;
   date?: string;
   preBooked?: boolean;
+  cost?: number;
 }
 
 const checklist: ChecklistItem[] = [
@@ -46,6 +47,7 @@ const checklist: ChecklistItem[] = [
     detail: "12014 Amritsar Shatabdi · 31 Mar · JUC 06:01 → NDLS 11:02 · CC · PNR 2732874627 · ₹1,899",
     date: "31 Mar",
     preBooked: true,
+    cost: 1000,
   },
   {
     id: "train-mathura-dham",
@@ -70,6 +72,7 @@ const checklist: ChecklistItem[] = [
     detail: "12029 Swarn Shatabdi · 8 Apr · NDLS 07:20 → JUC 12:06 · CC · PNR 2732876330 · ₹6,243",
     date: "8 Apr",
     preBooked: true,
+    cost: 1000,
   },
   // Taxi / Transport
   {
@@ -79,6 +82,7 @@ const checklist: ChecklistItem[] = [
     detail: "9-seater · 31 Mar · ₹14,000",
     date: "31 Mar",
     preBooked: true,
+    cost: 15000,
   },
   {
     id: "taxi-vrindavan-mathura",
@@ -86,6 +90,7 @@ const checklist: ChecklistItem[] = [
     label: "Vrindavan → Mathura Jn taxi",
     detail: "~06:00 AM · 4 Apr · ~15 km (train dep 07:20)",
     date: "4 Apr",
+    cost: 2000,
   },
   {
     id: "taxi-station-dham",
@@ -93,6 +98,7 @@ const checklist: ChecklistItem[] = [
     label: "Lalitpur → Sri Anandpur Dham taxi",
     detail: "4 Apr · Lalitpur arr 11:42 · ~80 km (~2h) · ₹2,500–3,500",
     date: "4 Apr",
+    cost: 1200,
   },
   {
     id: "taxi-dham-gwalior",
@@ -100,6 +106,7 @@ const checklist: ChecklistItem[] = [
     label: "Dham → Gwalior Airport taxi",
     detail: "7 Apr · ~230 km · ₹3,000",
     date: "7 Apr",
+    cost: 1200,
   },
   {
     id: "taxi-himachal",
@@ -127,9 +134,10 @@ const checklist: ChecklistItem[] = [
     id: "stay-vrindavan",
     category: "stay",
     label: "Vrindavan homestay (4 nights)",
-    detail: "31 Mar – 4 Apr · ₹36,000",
+    detail: "31 Mar – 4 Apr · ₹28,000 (₹7,000 deposit paid, ₹21,000 at check-in)",
     date: "31 Mar",
     preBooked: true,
+    cost: 6000,
   },
   {
     id: "stay-delhi-7apr",
@@ -138,6 +146,7 @@ const checklist: ChecklistItem[] = [
     detail: "7 Apr · 1 night · near New Delhi Stn & Connaught Place · ₹3,000–5,000",
     date: "7 Apr",
     preBooked: true,
+    cost: 8000,
   },
   {
     id: "stay-himachal",
@@ -193,6 +202,7 @@ const STORAGE_KEY = "indiatrip-checklist-v2";
 
 export default function BookingChecklist() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const isLoaded = useRef(false);
 
   // Load from localStorage
   useEffect(() => {
@@ -219,10 +229,12 @@ export default function BookingChecklist() {
     } catch {
       // ignore
     }
+    isLoaded.current = true;
   }, []);
 
-  // Save to localStorage
+  // Save to localStorage (skip until initial load completes)
   useEffect(() => {
+    if (!isLoaded.current) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(checked));
     } catch {
@@ -235,8 +247,9 @@ export default function BookingChecklist() {
   };
 
   const total = checklist.length;
-  const done = Object.values(checked).filter(Boolean).length;
+  const done = checklist.filter((item) => checked[item.id]).length;
   const pct = Math.round((done / total) * 100);
+  const grandTotal = checklist.reduce((sum, i) => sum + (i.cost || 0), 0);
 
   // Group by category
   const categories = Object.keys(categoryConfig) as (keyof typeof categoryConfig)[];
@@ -279,7 +292,14 @@ export default function BookingChecklist() {
             {pct}%
           </span>
         </div>
-        <div className="h-2 sm:h-2.5 bg-gray-100 rounded-full overflow-hidden">
+        <div
+          className="h-2 sm:h-2.5 bg-gray-100 rounded-full overflow-hidden"
+          role="progressbar"
+          aria-valuenow={pct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`Booking progress: ${done} of ${total} items done`}
+        >
           <motion.div
             className="h-full bg-gradient-to-r from-orange-500 to-green-600 rounded-full"
             initial={{ width: 0 }}
@@ -295,6 +315,7 @@ export default function BookingChecklist() {
           const config = categoryConfig[cat];
           const Icon = config.icon;
           const catDone = items.filter((i) => checked[i.id]).length;
+          const catTotal = items.reduce((sum, i) => sum + (i.cost || 0), 0);
 
           return (
             <motion.div
@@ -322,6 +343,9 @@ export default function BookingChecklist() {
                     <button
                       key={item.id}
                       onClick={() => toggle(item.id)}
+                      role="checkbox"
+                      aria-checked={isDone}
+                      aria-label={`${item.label}${item.cost ? ` — ₹${item.cost.toLocaleString("en-IN")}` : ""}`}
                       className="w-full flex items-start gap-3 px-4 sm:px-5 py-2.5 sm:py-3 text-left hover:bg-gray-50/50 transition-colors group"
                     >
                       {isDone ? (
@@ -339,24 +363,58 @@ export default function BookingChecklist() {
                           </p>
                         )}
                       </div>
-                      {item.preBooked && isDone && (
-                        <span className="text-[8px] sm:text-[10px] bg-green-100 text-green-700 font-semibold px-1.5 py-0.5 rounded flex-shrink-0 mt-0.5">
+                      {item.cost ? (
+                        <span className={`text-[10px] sm:text-xs font-semibold whitespace-nowrap flex-shrink-0 mt-0.5 ${isDone ? "text-gray-300" : "text-gray-600"}`}>
+                          ₹{item.cost.toLocaleString("en-IN")}
+                        </span>
+                      ) : item.preBooked && isDone ? (
+                        <span className="text-[10px] sm:text-xs bg-green-100 text-green-700 font-semibold px-1.5 py-0.5 rounded flex-shrink-0 mt-0.5">
                           BOOKED
                         </span>
-                      )}
-                      {item.date && !isDone && (
+                      ) : item.date && !isDone ? (
                         <span className="text-[10px] sm:text-xs text-gray-300 font-mono flex-shrink-0 mt-0.5">
                           {item.date}
                         </span>
-                      )}
+                      ) : null}
                     </button>
                   );
                 })}
               </div>
+
+              {/* Section total */}
+              {catTotal > 0 && (
+                <div className={`flex items-center justify-between px-4 sm:px-5 py-2 sm:py-2.5 ${config.bg} border-t border-gray-100`}>
+                  <span className={`text-[10px] sm:text-xs font-bold ${config.color}`}>
+                    {config.label} Total
+                  </span>
+                  <span className={`text-xs sm:text-sm font-bold ${config.color}`}>
+                    ₹{catTotal.toLocaleString("en-IN")}
+                  </span>
+                </div>
+              )}
             </motion.div>
           );
         })}
       </div>
+
+      {/* Grand total */}
+      {grandTotal > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-4 sm:mt-6 bg-gradient-to-r from-orange-500 to-green-600 rounded-2xl p-4 sm:p-5 shadow-sm"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-sm sm:text-base font-bold text-white/90">
+              Estimated Grand Total
+            </span>
+            <span className="text-lg sm:text-xl font-black text-white">
+              ₹{grandTotal.toLocaleString("en-IN")}
+            </span>
+          </div>
+        </motion.div>
+      )}
     </section>
   );
 }

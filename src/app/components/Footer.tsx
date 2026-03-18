@@ -3,7 +3,7 @@ import { flights } from "../data";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-400 text-center py-8 sm:py-12 px-4 pb-20 sm:pb-12">
+    <footer className="bg-gray-900 text-gray-300 text-center py-8 sm:py-12 px-4 pb-16 sm:pb-16">
       <div className="flex justify-center gap-1 mb-3 sm:mb-4">
         <div className="w-8 sm:w-10 h-1 rounded-full bg-[#FF9933]" />
         <div className="w-8 sm:w-10 h-1 rounded-full bg-white" />

@@ -1,6 +1,13 @@
 "use client";
 import { motion } from "framer-motion";
-import { Printer, Plane, MapPin, Calendar, Users, Train, Car } from "lucide-react";
+import { Printer, Plane, MapPin, Calendar, Users, Train, Car, Hotel, Stethoscope } from "lucide-react";
+import type { TransportOption } from "../data";
+
+const modeIcon = (mode: TransportOption["mode"]) =>
+  mode === "train" ? Train : mode === "flight" ? Plane : mode === "stay" ? Hotel : mode === "medical" ? Stethoscope : Car;
+
+const modeEmoji = (mode: TransportOption["mode"]) =>
+  mode === "train" ? "🚆" : mode === "flight" ? "✈️" : mode === "stay" ? "🏨" : mode === "medical" ? "🏥" : "🚗";
 import { flights, itinerary, flexiblePlans, delhiToJalandharTransport, vrindavanToChandigarhTransport, routeStops } from "../data";
 import { useCurrency } from "./CurrencyContext";
 
@@ -196,7 +203,7 @@ export default function PrintSummary() {
                         {day.transport ? (
                           <div className="space-y-1">
                             {day.transport.map((t, i) => {
-                              const Icon = t.mode === "train" ? Train : t.mode === "flight" ? Plane : Car;
+                              const Icon = modeIcon(t.mode);
                               return (
                                 <div key={i} className="flex items-center gap-1 sm:gap-1.5">
                                   <Icon className="w-3 h-3 text-gray-400 flex-shrink-0" />
@@ -228,7 +235,7 @@ export default function PrintSummary() {
               <div className="bg-violet-50 rounded-xl p-2.5 sm:p-3">
                 <p className="text-[10px] sm:text-xs font-bold text-violet-700 mb-1.5 sm:mb-2">Sunil&apos;s Family (6 persons) — Dham → Delhi → Jalandhar</p>
                 {delhiToJalandharTransport.map((t, i) => {
-                  const Icon = t.mode === "train" ? Train : t.mode === "flight" ? Plane : Car;
+                  const Icon = modeIcon(t.mode);
                   return (
                     <div key={i} className="flex items-center gap-1 sm:gap-1.5 mb-0.5 sm:mb-1">
                       <Icon className="w-3 h-3 text-gray-400 flex-shrink-0" />
@@ -241,7 +248,7 @@ export default function PrintSummary() {
               <div className="bg-pink-50 rounded-xl p-2.5 sm:p-3">
                 <p className="text-[10px] sm:text-xs font-bold text-pink-700 mb-1.5 sm:mb-2">Parul&apos;s Parents — Vrindavan → Chandigarh (4 Apr)</p>
                 {vrindavanToChandigarhTransport.map((t, i) => {
-                  const Icon = t.mode === "train" ? Train : t.mode === "flight" ? Plane : Car;
+                  const Icon = modeIcon(t.mode);
                   return (
                     <div key={i} className="flex items-center gap-1 sm:gap-1.5 mb-0.5 sm:mb-1">
                       <Icon className="w-3 h-3 text-gray-400 flex-shrink-0" />
@@ -273,7 +280,7 @@ export default function PrintSummary() {
                     {plan.transport && (
                       <div className="mt-1 sm:mt-1.5 space-y-0.5">
                         {plan.transport.map((t, i) => {
-                          const Icon = t.mode === "train" ? Train : t.mode === "flight" ? Plane : Car;
+                          const Icon = modeIcon(t.mode);
                           return (
                             <div key={i} className="flex items-center gap-1 sm:gap-1.5">
                               <Icon className="w-3 h-3 text-gray-400 flex-shrink-0" />
@@ -380,7 +387,7 @@ export default function PrintSummary() {
                     <td className="p-1.5 border border-gray-200 font-medium">{day.title}</td>
                     <td className="p-1.5 border border-gray-200">
                       {day.transport ? day.transport.map((t, i) => (
-                        <div key={i}>{t.mode === "train" ? "🚆" : t.mode === "flight" ? "✈️" : "🚗"} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</div>
+                        <div key={i}>{modeEmoji(t.mode)} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</div>
                       )) : "—"}
                     </td>
                     <td className="p-1.5 border border-gray-200">
@@ -399,13 +406,13 @@ export default function PrintSummary() {
               <div>
                 <p className="font-bold mb-1">Sunil&apos;s Family (6 persons) — Dham → Delhi → Jalandhar</p>
                 {delhiToJalandharTransport.map((t, i) => (
-                  <p key={i}>{t.mode === "train" ? "🚆" : t.mode === "flight" ? "✈️" : "🚗"} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
+                  <p key={i}>{modeEmoji(t.mode)} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
                 ))}
               </div>
               <div>
                 <p className="font-bold mb-1">Parul&apos;s Parents — Vrindavan → Chandigarh (4 Apr)</p>
                 {vrindavanToChandigarhTransport.map((t, i) => (
-                  <p key={i}>{t.mode === "train" ? "🚆" : t.mode === "flight" ? "✈️" : "🚗"} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
+                  <p key={i}>{modeEmoji(t.mode)} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
                 ))}
               </div>
             </div>
@@ -418,7 +425,7 @@ export default function PrintSummary() {
               <div key={plan.id} className="mb-2 text-xs">
                 <p className="font-bold">{plan.icon} {plan.title} — {plan.duration} ({plan.location}){plan.group ? ` [${plan.group}]` : ""}</p>
                 {plan.transport && plan.transport.map((t, i) => (
-                  <p key={i} className="ml-4">{t.mode === "train" ? "🚆" : "🚗"} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
+                  <p key={i} className="ml-4">{modeEmoji(t.mode)} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
                 ))}
               </div>
             ))}

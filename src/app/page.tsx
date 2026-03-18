@@ -9,7 +9,6 @@ import TotalCost from "./components/TotalCost";
 import Footer from "./components/Footer";
 import { CurrencyProvider } from "./components/CurrencyContext";
 import { TransportSelectionProvider } from "./components/TransportSelectionContext";
-import CurrencyToggle from "./components/CurrencyToggle";
 import Documents from "./components/Documents";
 import BookingChecklist from "./components/BookingChecklist";
 import Notes from "./components/Notes";
@@ -32,7 +31,6 @@ export default function Home() {
                     <PrintSummary />
                     <TotalCost />
                     <Footer />
-                    <CurrencyToggle />
                     <StickyTotalBar />
                 </main>
             </TransportSelectionProvider>

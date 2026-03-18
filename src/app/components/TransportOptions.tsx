@@ -1,6 +1,6 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
-import { Train, Car, Plane, Star, Check, ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
+import { Train, Car, Plane, Star, Check, ExternalLink, Hotel, Stethoscope } from "lucide-react";
 import { TransportOption } from "../data";
 import { useCurrency } from "./CurrencyContext";
 import { useTransportSelection } from "./TransportSelectionContext";
@@ -9,6 +9,8 @@ const modeConfig = {
   train: { icon: Train, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", label: "Train" },
   taxi: { icon: Car, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", label: "Taxi" },
   flight: { icon: Plane, color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-200", label: "Flight" },
+  stay: { icon: Hotel, color: "text-teal-600", bg: "bg-teal-50", border: "border-teal-200", label: "Stay" },
+  medical: { icon: Stethoscope, color: "text-rose-600", bg: "bg-rose-50", border: "border-rose-200", label: "Medical" },
 };
 
 // Map PNRs to PDF filenames in /public
@@ -51,7 +53,6 @@ export default function TransportOptions({
       <p className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 sm:mb-2">
         {title} {selectable && <span className="normal-case font-normal">(tap to select)</span>}
       </p>
-      <AnimatePresence>
         <div className="space-y-2">
           {options.map((opt, i) => {
             const config = modeConfig[opt.mode];
@@ -59,19 +60,20 @@ export default function TransportOptions({
             const isSelected = selectable && selectedIdx === i;
             const isUnselected = selectable && selectedIdx !== i;
             const ticketUrl = getTicketUrl(opt);
-            const isClickable = selectable || !!ticketUrl;
+            const externalUrl = ticketUrl || opt.link || null;
+            const isClickable = selectable || !!externalUrl;
 
             const handleClick = () => {
               if (selectable && legId) {
                 setSelected(legId, i);
-              } else if (ticketUrl) {
-                window.open(ticketUrl, "_blank", "noopener,noreferrer");
+              } else if (externalUrl) {
+                window.open(externalUrl, "_blank", "noopener,noreferrer");
               }
             };
 
             return (
               <motion.div
-                key={i}
+                key={opt.label}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }}
@@ -84,22 +86,22 @@ export default function TransportOptions({
                     : isUnselected
                       ? `border-gray-200 bg-gray-50/30 opacity-60 hover:opacity-80`
                       : `${config.border} ${config.bg}/50 ${opt.recommended ? "ring-2 ring-green-400/50" : ""}`
-                } ${opt.booked ? "ring-2 ring-green-500" : ""} ${ticketUrl && !selectable ? "hover:shadow-md" : ""}`}
+                } ${opt.booked ? "ring-2 ring-green-500" : ""} ${externalUrl && !selectable ? "hover:shadow-md" : ""}`}
               >
                 {opt.booked ? (
-                  <span className="absolute -top-2 right-2 sm:right-3 bg-green-600 text-white text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full flex items-center gap-0.5 sm:gap-1">
+                  <span className="absolute -top-2 right-2 sm:right-3 bg-green-600 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full flex items-center gap-0.5 sm:gap-1">
                     <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> BOOKED
                   </span>
                 ) : hasBookedOption && !opt.booked ? (
-                  <span className="absolute -top-2 right-2 sm:right-3 bg-amber-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full">
+                  <span className="absolute -top-2 right-2 sm:right-3 bg-amber-500 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full">
                     TO CONFIRM
                   </span>
                 ) : isSelected ? (
-                  <span className="absolute -top-2 right-2 sm:right-3 bg-green-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full flex items-center gap-0.5 sm:gap-1">
+                  <span className="absolute -top-2 right-2 sm:right-3 bg-green-500 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full flex items-center gap-0.5 sm:gap-1">
                     <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> SELECTED
                   </span>
                 ) : !selectable && opt.recommended ? (
-                  <span className="absolute -top-2 right-2 sm:right-3 bg-green-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full flex items-center gap-0.5 sm:gap-1">
+                  <span className="absolute -top-2 right-2 sm:right-3 bg-green-500 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full flex items-center gap-0.5 sm:gap-1">
                     <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> REC
                   </span>
                 ) : null}
@@ -135,9 +137,9 @@ export default function TransportOptions({
                   {opt.note && (
                     <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5 sm:mt-1 leading-relaxed">{opt.note}</p>
                   )}
-                  {ticketUrl && (
+                  {externalUrl && (
                     <p className="text-[10px] sm:text-xs text-blue-500 mt-1 flex items-center gap-1 font-medium">
-                      <ExternalLink className="w-3 h-3" /> View ticket
+                      <ExternalLink className="w-3 h-3" /> {ticketUrl ? "View ticket" : "View booking"}
                     </p>
                   )}
                 </div>
@@ -145,7 +147,6 @@ export default function TransportOptions({
             );
           })}
         </div>
-      </AnimatePresence>
     </div>
   );
 }

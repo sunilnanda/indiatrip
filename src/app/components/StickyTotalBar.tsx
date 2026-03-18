@@ -1,10 +1,11 @@
 "use client";
+import { Eye, EyeOff } from "lucide-react";
 import { useCurrency } from "./CurrencyContext";
 import { useTransportSelection } from "./TransportSelectionContext";
 
 function parseCostRange(costTotal: string): [number, number] {
-  const cleaned = costTotal.replace(/₹/g, "");
-  const nums = cleaned.match(/[\d,]+/g);
+  const stripped = costTotal.replace(/\([^)]*\)/g, "").replace(/₹/g, "");
+  const nums = stripped.match(/[\d,]+/g);
   if (!nums) return [0, 0];
   const values = nums.map((n) => parseFloat(n.replace(/,/g, "")));
   if (values.length >= 2) return [values[0], values[1]];
@@ -15,7 +16,8 @@ const costLegs = [
   { legId: "day1-vrindavan", fixedIndex: undefined as number | undefined },
   { legId: "day2", fixedIndex: undefined as number | undefined },
   { legId: "day3", fixedIndex: undefined as number | undefined },
-  { legId: "day8", fixedIndex: undefined as number | undefined },
+  { legId: "day8", fixedIndex: 0 },
+  { legId: "day8", fixedIndex: 1 },
   { legId: "delhi-jalandhar", fixedIndex: undefined as number | undefined },
   { legId: "delhi-chandigarh", fixedIndex: undefined as number | undefined },
   { legId: "himachal", fixedIndex: undefined as number | undefined },
@@ -26,10 +28,8 @@ const costLegs = [
 const INR_TO_AUD = 1 / 65;
 
 export default function StickyTotalBar() {
-  const { currency, symbol, showPrices } = useCurrency();
+  const { currency, toggleCurrency, symbol, showPrices, togglePrices } = useCurrency();
   const { getSelectedOption, getOptionsForLeg } = useTransportSelection();
-
-  if (!showPrices) return null;
 
   let totalLow = 0;
   let totalHigh = 0;
@@ -56,18 +56,72 @@ export default function StickyTotalBar() {
   };
 
   return (
-    <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 print:hidden max-w-[calc(100vw-120px)] sm:max-w-none">
-      <a
-        href="#total-cost"
-        className="bg-gradient-to-r from-orange-500 to-green-600 text-white rounded-full px-3 sm:px-5 py-2 sm:py-3 shadow-lg hover:shadow-xl transition-all flex items-center gap-1.5 sm:gap-3 no-underline"
-      >
-        <span className="text-[9px] sm:text-xs font-medium text-white/80">
-          Total
-        </span>
-        <span className="text-xs sm:text-base font-bold truncate">
-          {symbol}{fmt(totalLow)} – {symbol}{fmt(totalHigh)}
-        </span>
-      </a>
+    <div className="fixed bottom-0 left-0 right-0 z-50 print:hidden">
+      <div className="bg-gray-900/95 backdrop-blur-sm border-t border-gray-700/50 px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+        {/* Left: Total cost (only when prices visible) */}
+        {showPrices ? (
+          <a
+            href="#total-cost"
+            className="flex items-center gap-2 min-w-0 no-underline"
+          >
+            <span className="text-[10px] sm:text-xs font-medium text-gray-400">
+              Total
+            </span>
+            <span className="text-sm sm:text-base font-bold text-white truncate">
+              {symbol}{fmt(totalLow)} – {symbol}{fmt(totalHigh)}
+            </span>
+          </a>
+        ) : (
+          <span className="text-xs sm:text-sm text-gray-500">
+            Prices hidden
+          </span>
+        )}
+
+        {/* Right: Controls */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Currency toggle (only when prices visible) */}
+          {showPrices && (
+            <button
+              onClick={toggleCurrency}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
+              title="Toggle currency"
+              role="switch"
+              aria-checked={currency === "AUD"}
+              aria-label={`Currency: ${currency}. Click to switch to ${currency === "INR" ? "AUD" : "INR"}`}
+            >
+              <span className="text-[10px] sm:text-xs font-bold text-white">
+                {currency === "INR" ? "₹" : "A$"}
+              </span>
+              <div className="w-7 sm:w-8 h-3.5 sm:h-4 bg-gray-600 rounded-full relative">
+                <div
+                  className={`absolute top-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all shadow-sm ${
+                    currency === "INR"
+                      ? "left-0.5 bg-orange-500"
+                      : "left-[14px] sm:left-[17px] bg-blue-500"
+                  }`}
+                />
+              </div>
+            </button>
+          )}
+
+          {/* Show/Hide prices */}
+          <button
+            onClick={togglePrices}
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
+            title={showPrices ? "Hide prices" : "Show prices"}
+            aria-label={showPrices ? "Hide price estimates" : "Show price estimates"}
+          >
+            {showPrices ? (
+              <EyeOff className="w-3.5 h-3.5 text-gray-400" />
+            ) : (
+              <Eye className="w-3.5 h-3.5 text-gray-400" />
+            )}
+            <span className="text-[10px] sm:text-xs font-medium text-gray-400">
+              {showPrices ? "Hide" : "Show"}
+            </span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

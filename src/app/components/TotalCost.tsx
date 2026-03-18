@@ -5,8 +5,9 @@ import { useCurrency } from "./CurrencyContext";
 import { useTransportSelection } from "./TransportSelectionContext";
 
 function parseCostRange(costTotal: string): [number, number] {
-  const cleaned = costTotal.replace(/₹/g, "");
-  const nums = cleaned.match(/[\d,]+/g);
+  // Strip parenthetical text (e.g. "(6 persons, all inclusive)") before parsing
+  const stripped = costTotal.replace(/\([^)]*\)/g, "").replace(/₹/g, "");
+  const nums = stripped.match(/[\d,]+/g);
   if (!nums) return [0, 0];
   const values = nums.map((n) => parseFloat(n.replace(/,/g, "")));
   if (values.length >= 2) return [values[0], values[1]];
@@ -17,7 +18,8 @@ const costLegs: { legId: string; label: string; category: "core" | "flexible"; f
   { legId: "day1-vrindavan", label: "Delhi → Vrindavan", category: "core" },
   { legId: "day2", label: "Vrindavan Homestay", category: "core" },
   { legId: "day3", label: "Vrindavan → Sri Anandpur Dham", category: "core" },
-  { legId: "day8", label: "Sri Anandpur Dham → Delhi", category: "core" },
+  { legId: "day8", label: "Dham → Gwalior Airport Taxi", category: "core", fixedIndex: 0 },
+  { legId: "day8", label: "Gwalior → Delhi Flight", category: "core", fixedIndex: 1 },
   { legId: "delhi-jalandhar", label: "Delhi → Jalandhar", category: "core" },
   { legId: "delhi-chandigarh", label: "Parul's Parents: Vrindavan → Chandigarh", category: "core" },
   { legId: "himachal", label: "Himachal Temple Circuit", category: "flexible" },

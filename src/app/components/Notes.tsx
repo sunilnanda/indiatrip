@@ -11,15 +11,15 @@ interface Note {
     createdAt: number;
 }
 
-const STORAGE_KEY = "indiatrip-notes";
+const STORAGE_KEY = "indiatrip-notes-v2";
 
 const defaultNotes: Note[] = [
     {
         id: "dad-trains",
         title: "Notes for Dad",
-        content: `Book following train tickets:
-• 18238 Chhattisgarh Exp — 4 Apr — Mathura dep 06:30 → Lalitpur arr 14:28 / Bina arr 15:55 — 6 persons (2AC or 1AC)
-• 12029 Swarna Shatabdi — 8 Apr — New Delhi dep 07:20 → Jalandhar arr 12:06 — 6 persons (CC or EC)
+        content: `Book home in Delhi for 1 night:
+• On 7th Night, 8th Morning Checkout
+• Hotel Gold Regency
 
 Arrange taxis:
 • Vrindavan → Mathura Jn — 4 Apr early morning (~05:00 AM) — 6 persons
@@ -29,6 +29,15 @@ Arrange taxis:
         createdAt: 1,
     },
     {
+        id: "financials",
+        title: "Financial Notes",
+        content: `• ₹101 to be given to Montu for recharge
+• ₹7,000 + ₹1,000 to be returned to Ramit (for Airbnb bookings)
+• Vrindavan homestay: ₹21,000 remaining due at check-in (₹7,000 deposit paid)`,
+        color: "green",
+        createdAt: 2,
+    },
+    {
         id: "general",
         title: "General Notes",
         content: `• Pack medicines, chargers, adapters
@@ -36,7 +45,7 @@ Arrange taxis:
 • Download offline maps for MP & Himachal
 • INR cash for taxi drivers & local expenses`,
         color: "blue",
-        createdAt: 2,
+        createdAt: 3,
     },
 ];
 
@@ -54,6 +63,8 @@ export default function Notes() {
     const [notes, setNotes] = useState<Note[]>([]);
     const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
     const [loaded, setLoaded] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+    const confirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
 
     // Load from localStorage
@@ -178,14 +189,30 @@ export default function Notes() {
                                 >
                                     {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
                                 </button>
-                                <button
-                                    onClick={() => {
-                                        if (window.confirm("Delete this note?")) deleteNote(note.id);
-                                    }}
-                                    className="text-gray-300 hover:text-red-400 transition-colors p-1"
-                                >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                </button>
+                                {confirmDelete === note.id ? (
+                                    <button
+                                        onClick={() => {
+                                            if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+                                            setConfirmDelete(null);
+                                            deleteNote(note.id);
+                                        }}
+                                        className="text-red-500 hover:text-red-600 transition-colors px-1.5 py-0.5 rounded bg-red-50 text-[10px] sm:text-xs font-semibold"
+                                    >
+                                        Confirm?
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => {
+                                            setConfirmDelete(note.id);
+                                            if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+                                            confirmTimerRef.current = setTimeout(() => setConfirmDelete(null), 3000);
+                                        }}
+                                        className="text-gray-300 hover:text-red-400 transition-colors p-1"
+                                        aria-label="Delete note"
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                )}
                             </div>
 
                             {/* Content */}
