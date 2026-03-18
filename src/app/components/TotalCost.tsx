@@ -3,31 +3,7 @@ import { motion } from "framer-motion";
 import { Calculator, TrendingUp } from "lucide-react";
 import { useCurrency } from "./CurrencyContext";
 import { useTransportSelection } from "./TransportSelectionContext";
-
-function parseCostRange(costTotal: string): [number, number] {
-  // Strip parenthetical text (e.g. "(6 persons, all inclusive)") before parsing
-  const stripped = costTotal.replace(/\([^)]*\)/g, "").replace(/₹/g, "");
-  const nums = stripped.match(/[\d,]+/g);
-  if (!nums) return [0, 0];
-  const values = nums.map((n) => parseFloat(n.replace(/,/g, "")));
-  if (values.length >= 2) return [values[0], values[1]];
-  return [values[0] || 0, values[0] || 0];
-}
-
-const costLegs: { legId: string; label: string; category: "core" | "flexible"; fixedIndex?: number }[] = [
-  { legId: "day1-vrindavan", label: "Delhi → Vrindavan", category: "core" },
-  { legId: "day2", label: "Vrindavan Homestay", category: "core" },
-  { legId: "day3", label: "Vrindavan → Sri Anandpur Dham", category: "core" },
-  { legId: "day8", label: "Dham → Gwalior Airport Taxi", category: "core", fixedIndex: 0 },
-  { legId: "day8", label: "Gwalior → Delhi Flight", category: "core", fixedIndex: 1 },
-  { legId: "delhi-jalandhar", label: "Delhi → Jalandhar", category: "core" },
-  { legId: "delhi-chandigarh", label: "Parul's Parents: Vrindavan → Chandigarh", category: "core" },
-  { legId: "himachal", label: "Himachal Temple Circuit", category: "flexible" },
-  { legId: "himachal", label: "Himachal Stay", category: "flexible", fixedIndex: 1 },
-  { legId: "chandigarh", label: "Jalandhar → Chandigarh", category: "flexible" },
-];
-
-const INR_TO_AUD = 1 / 65;
+import { parseCostRange, costLegs, INR_TO_AUD } from "../lib/costs";
 
 export default function TotalCost() {
   const { currency, symbol, showPrices } = useCurrency();
@@ -38,6 +14,11 @@ export default function TotalCost() {
   const fmt = (inr: number) => {
     const val = currency === "AUD" ? Math.round(inr * INR_TO_AUD) : inr;
     return val.toLocaleString();
+  };
+
+  const range = (low: number, high: number, sym = symbol) => {
+    if (low === high) return `${sym}${fmt(low)}`;
+    return `${sym}${fmt(low)} – ${sym}${fmt(high)}`;
   };
 
   const items = costLegs.map((leg) => {
@@ -116,7 +97,7 @@ export default function TotalCost() {
                   </p>
                 </div>
                 <p className="text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  {symbol}{fmt(item.lowINR)} – {symbol}{fmt(item.highINR)}
+                  {range(item.lowINR, item.highINR)}
                 </p>
               </div>
             ))}
@@ -124,7 +105,7 @@ export default function TotalCost() {
           <div className="flex items-center justify-between mt-3 sm:mt-4 pt-3 sm:pt-4 border-t-2 border-orange-100">
             <p className="text-xs sm:text-sm font-bold text-orange-600">Core Subtotal</p>
             <p className="text-sm sm:text-base font-bold text-orange-600">
-              {symbol}{fmt(coreLow)} – {symbol}{fmt(coreHigh)}
+              {range(coreLow, coreHigh)}
             </p>
           </div>
         </div>
@@ -150,7 +131,7 @@ export default function TotalCost() {
                   </p>
                 </div>
                 <p className="text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  {symbol}{fmt(item.lowINR)} – {symbol}{fmt(item.highINR)}
+                  {range(item.lowINR, item.highINR)}
                 </p>
               </div>
             ))}
@@ -158,7 +139,7 @@ export default function TotalCost() {
           <div className="flex items-center justify-between mt-3 sm:mt-4 pt-3 sm:pt-4 border-t-2 border-violet-100">
             <p className="text-xs sm:text-sm font-bold text-violet-600">Flexible Subtotal</p>
             <p className="text-sm sm:text-base font-bold text-violet-600">
-              {symbol}{fmt(flexLow)} – {symbol}{fmt(flexHigh)}
+              {range(flexLow, flexHigh)}
             </p>
           </div>
         </div>
@@ -176,11 +157,11 @@ export default function TotalCost() {
             </div>
             <div className="text-right">
               <p className="text-xl sm:text-2xl md:text-3xl font-black text-white">
-                {symbol}{fmt(totalLow)} – {symbol}{fmt(totalHigh)}
+                {range(totalLow, totalHigh)}
               </p>
               {currency === "INR" && (
                 <p className="text-white/60 text-[10px] sm:text-xs mt-0.5">
-                  ≈ A${fmt(Math.round(totalLow * INR_TO_AUD))} – A${fmt(Math.round(totalHigh * INR_TO_AUD))}
+                  ≈ {range(Math.round(totalLow * INR_TO_AUD), Math.round(totalHigh * INR_TO_AUD), "A$")}
                 </p>
               )}
               {currency === "AUD" && (

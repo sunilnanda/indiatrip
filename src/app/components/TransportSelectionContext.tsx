@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
-import { TransportOption, itinerary, delhiToJalandharTransport, vrindavanToChandigarhTransport, flexiblePlans } from "../data";
+import { TransportOption, itinerary } from "../data";
 
 interface TransportSelectionContextType {
   getSelected: (legId: string) => number;
@@ -12,13 +12,6 @@ interface TransportSelectionContextType {
 function findOptions(legId: string): TransportOption[] | undefined {
   const day = itinerary.find((d) => d.id === legId);
   if (day?.transport) return day.transport;
-
-  if (legId === "delhi-jalandhar") return delhiToJalandharTransport;
-  if (legId === "delhi-chandigarh") return vrindavanToChandigarhTransport;
-
-  const plan = flexiblePlans.find((p) => p.id === legId);
-  if (plan?.transport) return plan.transport;
-
   return undefined;
 }
 

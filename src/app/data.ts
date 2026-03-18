@@ -26,17 +26,6 @@ export interface ItineraryDay {
     transport?: TransportOption[];
 }
 
-export interface FlexiblePlan {
-    id: string;
-    title: string;
-    description: string;
-    duration: string;
-    icon: string;
-    location: string;
-    group?: string;
-    transport?: TransportOption[];
-}
-
 export const flights = {
     departure: {
         date: "Tuesday, 31 March 2026",
@@ -184,7 +173,7 @@ export const itinerary: ItineraryDay[] = [
         location: "Sri Anandpur Dham, Ashok Nagar, MP",
         description:
             "Arrive evening of 4th April and settle in. 3 nights at the ashram — attend spiritual sessions, engage with the community, and spend quality time with family. Depart morning of 7th April.",
-        tags: [{ label: "No Accommodation Cost", free: true }, { label: "6 persons" }, { label: "3 Nights" }],
+        tags: [{ label: "No Accommodation Cost" }, { label: "6 persons" }, { label: "3 Nights" }],
         color: "gold",
     },
     {
@@ -387,137 +376,6 @@ export const itinerary: ItineraryDay[] = [
         color: "saffron",
     },
 ];
-
-export const delhiToJalandharTransport: TransportOption[] = [
-    {
-        mode: "train",
-        label: "12029 Swarn Shatabdi (Delhi → Jalandhar)",
-        duration: "~4h 46min (7:20 AM – 12:06 PM)",
-        costPerPerson: "₹835",
-        costTotal: "₹6,243 (6 persons, all inclusive)",
-        recommended: true,
-        booked: true,
-        details: "PNR: 2732876330",
-        note: "NDLS dep 07:20 → JUC arr 12:06. AC Chair Car (CC). 6 persons confirmed: C10/10-15. Complimentary meals (VEG).",
-    },
-];
-
-export const vrindavanToChandigarhTransport: TransportOption[] = [
-    {
-        mode: "train",
-        label: "12925 Paschim Express (Mathura → Chandigarh)",
-        duration: "~7h 48min (07:35 – 15:23)",
-        costPerPerson: "₹1,710",
-        costTotal: "₹3,455 (2 persons, all inclusive)",
-        recommended: true,
-        details: "PNR: 8145795505",
-        note: "First AC (1A). MTJ dep 07:35 → CDG arr 15:23. PNR: 8145795505. Nagesh Dixit & Rama Dixit. STATUS: WAITLISTED (RLWL/1, RLWL/2). If not confirmed, fallback to taxi.",
-    },
-    {
-        mode: "taxi",
-        label: "Fallback: Innova Crysta / Similar",
-        duration: "5 – 6 hours (~300 km)",
-        costPerPerson: "–",
-        costTotal: "₹5,400",
-        note: "@ ₹18/km × 300 km. Vrindavan → Chandigarh via Delhi bypass. Comfortable for 2 persons.",
-    },
-];
-
-
-export const flexiblePlans: FlexiblePlan[] = [
-    {
-        id: "eye-surgery",
-        title: "Sunil's Eye Surgery",
-        description:
-            "Eye surgery (both eyes) planned around 11th April in Jalandhar. Recovery and follow-up visits needed. Plan other activities around this schedule.",
-        duration: "Around 11 Apr, 5 – 7 Days",
-        icon: "👁️",
-        location: "Jalandhar, Punjab",
-        group: "Sunil",
-        transport: [
-            {
-                mode: "medical",
-                label: "Eye Surgery Cost (Both Eyes)",
-                duration: "~11 April + 5 – 7 days recovery",
-                costPerPerson: "–",
-                costTotal: "₹80,000 – ₹1,30,000",
-                recommended: true,
-                note: "LASIK / PRK / ICL for both eyes. Includes consultation, surgery, post-op medication & follow-ups.",
-            },
-        ],
-    },
-    {
-        id: "himachal",
-        title: "Himachal Temple Circuit + Jathere",
-        description:
-            "Leave Jalandhar early morning around 6:00 – 7:00 AM. Jathere (ancestor worship) on 18th April. Sunil's Mom-Dad + Sunil, Parul & Kids (6 persons). Temple circuit: Chintpurni Mata Temple (~3h drive), Baba Balak Nath Ji (Deotsidh), Kamahi Devi Temple (Beh Nangal). ~350 km round trip.",
-        duration: "~17 – 19 April (2 – 3 Days)",
-        icon: "🛕",
-        location: "Lower Himachal Pradesh",
-        group: "Sunil's Mom-Dad + Sunil + Parul + Devanshi + Ryaan (6 persons)",
-        transport: [
-            {
-                mode: "taxi",
-                label: "Innova Crysta with Driver (Full Circuit)",
-                duration: "2 – 3 days round trip",
-                costPerPerson: "–",
-                costTotal: "₹6,300",
-                recommended: true,
-                note: "@ ₹18/km × 350 km. Jalandhar → Chintpurni (~120 km) → Deotsidh (~60 km) → Beh Nangal (~40 km) → Jalandhar. Seats 6 — fits all persons.",
-            },
-            {
-                mode: "stay",
-                label: "Himachal Stay (1–2 nights)",
-                duration: "Near Chintpurni / Deotsidh",
-                costPerPerson: "–",
-                costTotal: "₹8,000 – ₹16,000",
-                note: "Hotels in Chintpurni ~₹4,000/room/night. 2 rooms for 6 persons = ₹8,000/night. 1–2 nights stay.",
-            },
-        ],
-    },
-    {
-        id: "chandigarh",
-        title: "Visit to Chandigarh",
-        description:
-            "Leave Jalandhar around 8:00 – 9:00 AM, reach Chandigarh by 11:00 AM – 12:00 PM. 2 days at Vanita's place, 5 days at Parul's Mom-Dad house. Explore the City Beautiful — Rock Garden, Sukhna Lake, Sector 17 market, Rose Garden, Elante Mall.",
-        duration: "~20 – 26 April (~7 Days)",
-        icon: "🏙️",
-        location: "Chandigarh",
-        group: "Sunil + Parul + Devanshi + Ryaan (4 persons)",
-        transport: [
-            {
-                mode: "taxi",
-                label: "Innova Crysta / Similar",
-                duration: "2.5 – 3 hours (~144 km)",
-                costPerPerson: "–",
-                costTotal: "₹2,000",
-                recommended: true,
-                note: "One-way taxi Jalandhar → Chandigarh. Seats 6 — comfortable for 4 persons with luggage & kids.",
-            },
-            {
-                mode: "train",
-                label: "Train (Jalandhar → Chandigarh)",
-                duration: "2.5 – 3.5 hours",
-                costPerPerson: "₹200 – ₹600",
-                costTotal: "₹800 – ₹2,400 (4 persons)",
-                note: "Jan Shatabdi 12036: JUC dep 06:25 → CDG arr 09:05. Intercity 14682: JUC dep 07:15 → CDG arr 10:00. Shatabdi 12046: JUC dep 14:30 → CDG arr 16:45. CC ₹200 / EC ₹600.",
-            },
-        ],
-    },
-];
-
-export const travelers = {
-    core: [
-        { name: "Sunil", emoji: "👨‍💻", from: "Melbourne" },
-        { name: "Parul", emoji: "👩", from: "Melbourne" },
-        { name: "Devanshi", emoji: "👧", from: "Melbourne" },
-        { name: "Ryaan", emoji: "👦", from: "Melbourne" },
-    ],
-    joining: [
-        { name: "Sunil's Mom & Dad", emoji: "👴👵", from: "Receiving at Delhi Airport" },
-        { name: "Parul's Mom & Dad", emoji: "👴👵", from: "Receiving at Delhi Airport" },
-    ],
-};
 
 export const routeStops = [
     {

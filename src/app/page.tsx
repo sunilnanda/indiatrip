@@ -1,9 +1,7 @@
 import Navbar from "./components/Navbar";
 import FlightCards from "./components/FlightCards";
 import Overview from "./components/Overview";
-import Travelers from "./components/Travelers";
 import Timeline from "./components/Timeline";
-import FlexiblePlans from "./components/FlexiblePlans";
 import PrintSummary from "./components/PrintSummary";
 import TotalCost from "./components/TotalCost";
 import Footer from "./components/Footer";
@@ -22,9 +20,7 @@ export default function Home() {
                     <Navbar />
                     <FlightCards />
                     <Overview />
-                    {/* <Travelers /> */}
                     <Timeline />
-                    <FlexiblePlans />
                     <Documents />
                     <BookingChecklist />
                     <Notes />

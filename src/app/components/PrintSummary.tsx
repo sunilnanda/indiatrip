@@ -8,8 +8,12 @@ const modeIcon = (mode: TransportOption["mode"]) =>
 
 const modeEmoji = (mode: TransportOption["mode"]) =>
   mode === "train" ? "🚆" : mode === "flight" ? "✈️" : mode === "stay" ? "🏨" : mode === "medical" ? "🏥" : "🚗";
-import { flights, itinerary, flexiblePlans, delhiToJalandharTransport, vrindavanToChandigarhTransport, routeStops } from "../data";
+import { flights, itinerary, routeStops } from "../data";
 import { useCurrency } from "./CurrencyContext";
+
+const delhiJalandharTransport = itinerary.find((d) => d.id === "day9-delhi-jalandhar")?.transport || [];
+const parulParentsTransport = itinerary.find((d) => d.id === "day3")?.transport?.filter((_, i) => i === 1) || [];
+const confirmedPlans = itinerary.filter((d) => ["eye-surgery", "himachal", "chandigarh"].includes(d.id));
 
 export default function PrintSummary() {
   const { symbol, convert, showPrices } = useCurrency();
@@ -234,7 +238,7 @@ export default function PrintSummary() {
             <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="bg-violet-50 rounded-xl p-2.5 sm:p-3">
                 <p className="text-[10px] sm:text-xs font-bold text-violet-700 mb-1.5 sm:mb-2">Sunil&apos;s Family (6 persons) — Dham → Delhi → Jalandhar</p>
-                {delhiToJalandharTransport.map((t, i) => {
+                {delhiJalandharTransport.map((t, i) => {
                   const Icon = modeIcon(t.mode);
                   return (
                     <div key={i} className="flex items-center gap-1 sm:gap-1.5 mb-0.5 sm:mb-1">
@@ -247,7 +251,7 @@ export default function PrintSummary() {
               </div>
               <div className="bg-pink-50 rounded-xl p-2.5 sm:p-3">
                 <p className="text-[10px] sm:text-xs font-bold text-pink-700 mb-1.5 sm:mb-2">Parul&apos;s Parents — Vrindavan → Chandigarh (4 Apr)</p>
-                {vrindavanToChandigarhTransport.map((t, i) => {
+                {parulParentsTransport.map((t, i) => {
                   const Icon = modeIcon(t.mode);
                   return (
                     <div key={i} className="flex items-center gap-1 sm:gap-1.5 mb-0.5 sm:mb-1">
@@ -268,24 +272,23 @@ export default function PrintSummary() {
               Confirmed Plans (After 7 April)
             </h4>
             <div className="space-y-2">
-              {flexiblePlans.map((plan) => (
-                <div key={plan.id} className="flex items-start gap-2 sm:gap-3 bg-gray-50 rounded-xl p-2.5 sm:p-3">
-                  <span className="text-base sm:text-xl flex-shrink-0">{plan.icon}</span>
+              {confirmedPlans.map((day) => (
+                <div key={day.id} className="flex items-start gap-2 sm:gap-3 bg-gray-50 rounded-xl p-2.5 sm:p-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                      <p className="text-xs sm:text-sm font-semibold text-gray-800">{plan.title}</p>
-                      <span className="text-[10px] sm:text-xs bg-amber-100 text-amber-700 font-medium px-1.5 sm:px-2 py-0.5 rounded">{plan.duration}</span>
+                      <p className="text-xs sm:text-sm font-semibold text-gray-800">{day.title}</p>
+                      <span className="text-[10px] sm:text-xs bg-amber-100 text-amber-700 font-medium px-1.5 sm:px-2 py-0.5 rounded">{day.date}</span>
                     </div>
-                    <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{plan.location}{plan.group ? ` — ${plan.group}` : ""}</p>
-                    {plan.transport && (
+                    <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{day.location}</p>
+                    {day.transport && (
                       <div className="mt-1 sm:mt-1.5 space-y-0.5">
-                        {plan.transport.map((t, i) => {
+                        {day.transport.map((t, i) => {
                           const Icon = modeIcon(t.mode);
                           return (
                             <div key={i} className="flex items-center gap-1 sm:gap-1.5">
                               <Icon className="w-3 h-3 text-gray-400 flex-shrink-0" />
                               <span className="text-[10px] sm:text-xs text-gray-500 truncate">{t.label}{showPrices ? <>: <strong className="text-gray-700">{symbol}{convert(t.costTotal)}</strong></> : ""}</span>
-                              {t.recommended && <span className="text-[8px] sm:text-[9px] bg-green-100 text-green-700 px-1 rounded flex-shrink-0">REC</span>}
+                              {t.recommended && <span className="text-[10px] sm:text-xs bg-green-100 text-green-700 px-1 rounded flex-shrink-0">REC</span>}
                             </div>
                           );
                         })}
@@ -405,13 +408,13 @@ export default function PrintSummary() {
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
                 <p className="font-bold mb-1">Sunil&apos;s Family (6 persons) — Dham → Delhi → Jalandhar</p>
-                {delhiToJalandharTransport.map((t, i) => (
+                {delhiJalandharTransport.map((t, i) => (
                   <p key={i}>{modeEmoji(t.mode)} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
                 ))}
               </div>
               <div>
                 <p className="font-bold mb-1">Parul&apos;s Parents — Vrindavan → Chandigarh (4 Apr)</p>
-                {vrindavanToChandigarhTransport.map((t, i) => (
+                {parulParentsTransport.map((t, i) => (
                   <p key={i}>{modeEmoji(t.mode)} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
                 ))}
               </div>
@@ -421,10 +424,10 @@ export default function PrintSummary() {
           {/* Print Flexible Plans */}
           <div>
             <h3 className="text-sm font-bold text-gray-800 border-b border-gray-200 pb-1 mb-2">📋 Confirmed Plans (Post 7 April)</h3>
-            {flexiblePlans.map((plan) => (
-              <div key={plan.id} className="mb-2 text-xs">
-                <p className="font-bold">{plan.icon} {plan.title} — {plan.duration} ({plan.location}){plan.group ? ` [${plan.group}]` : ""}</p>
-                {plan.transport && plan.transport.map((t, i) => (
+            {confirmedPlans.map((day) => (
+              <div key={day.id} className="mb-2 text-xs">
+                <p className="font-bold">{day.title} — {day.date} ({day.location})</p>
+                {day.transport && day.transport.map((t, i) => (
                   <p key={i} className="ml-4">{modeEmoji(t.mode)} {t.label}: {symbol}{convert(t.costTotal)} {t.recommended ? "⭐" : ""}</p>
                 ))}
               </div>

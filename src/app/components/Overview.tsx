@@ -1,7 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
 import { routeStops } from "../data";
-import { ArrowDown } from "lucide-react";
 
 export default function Overview() {
     return (
@@ -15,35 +14,7 @@ export default function Overview() {
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">
                     Trip at a Glance
                 </h2>
-                {/* <p className="text-sm sm:text-base text-gray-500">
-          A journey through faith, family and the beauty of North India
-        </p>
-        <div className="w-16 h-1 bg-gradient-to-r from-orange-500 to-green-600 rounded-full mx-auto mt-3" /> */}
             </motion.div>
-
-            {/* Stats */}
-            {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12">
-                {[
-                    { number: "7+", label: "Cities & Towns" },
-                    { number: "31", label: "Days in India" },
-                    { number: "8", label: "Family Members" },
-                    { number: "5", label: "States & UTs" },
-                ].map((stat, i) => (
-                    <motion.div
-                        key={stat.label}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.1 }}
-                        className="bg-white rounded-2xl p-4 sm:p-5 text-center shadow-sm border border-gray-100"
-                    >
-                        <p className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-500 to-green-600 bg-clip-text text-transparent">
-                            {stat.number}
-                        </p>
-                        <p className="text-xs sm:text-sm text-gray-500 mt-1">{stat.label}</p>
-                    </motion.div>
-                ))}
-            </div> */}
 
             {/* Route Timeline */}
             <motion.div

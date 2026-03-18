@@ -2,30 +2,7 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useCurrency } from "./CurrencyContext";
 import { useTransportSelection } from "./TransportSelectionContext";
-
-function parseCostRange(costTotal: string): [number, number] {
-  const stripped = costTotal.replace(/\([^)]*\)/g, "").replace(/₹/g, "");
-  const nums = stripped.match(/[\d,]+/g);
-  if (!nums) return [0, 0];
-  const values = nums.map((n) => parseFloat(n.replace(/,/g, "")));
-  if (values.length >= 2) return [values[0], values[1]];
-  return [values[0] || 0, values[0] || 0];
-}
-
-const costLegs = [
-  { legId: "day1-vrindavan", fixedIndex: undefined as number | undefined },
-  { legId: "day2", fixedIndex: undefined as number | undefined },
-  { legId: "day3", fixedIndex: undefined as number | undefined },
-  { legId: "day8", fixedIndex: 0 },
-  { legId: "day8", fixedIndex: 1 },
-  { legId: "delhi-jalandhar", fixedIndex: undefined as number | undefined },
-  { legId: "delhi-chandigarh", fixedIndex: undefined as number | undefined },
-  { legId: "himachal", fixedIndex: undefined as number | undefined },
-  { legId: "himachal", fixedIndex: 1 },
-  { legId: "chandigarh", fixedIndex: undefined as number | undefined },
-];
-
-const INR_TO_AUD = 1 / 65;
+import { parseCostRange, costLegs, INR_TO_AUD } from "../lib/costs";
 
 export default function StickyTotalBar() {
   const { currency, toggleCurrency, symbol, showPrices, togglePrices } = useCurrency();
@@ -55,6 +32,11 @@ export default function StickyTotalBar() {
     return val.toLocaleString();
   };
 
+  const range = (low: number, high: number) => {
+    if (low === high) return `${symbol}${fmt(low)}`;
+    return `${symbol}${fmt(low)} – ${symbol}${fmt(high)}`;
+  };
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 print:hidden">
       <div className="bg-gray-900/95 backdrop-blur-sm border-t border-gray-700/50 px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2">
@@ -68,7 +50,7 @@ export default function StickyTotalBar() {
               Total
             </span>
             <span className="text-sm sm:text-base font-bold text-white truncate">
-              {symbol}{fmt(totalLow)} – {symbol}{fmt(totalHigh)}
+              {range(totalLow, totalHigh)}
             </span>
           </a>
         ) : (

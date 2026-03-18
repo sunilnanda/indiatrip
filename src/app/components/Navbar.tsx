@@ -7,7 +7,6 @@ const links = [
   { href: "#flights", label: "Flights" },
   { href: "#overview", label: "Overview" },
   { href: "#itinerary", label: "Itinerary" },
-  { href: "#options", label: "Confirmed Plans" },
   { href: "#documents", label: "Documents" },
   { href: "#checklist", label: "Checklist" },
   { href: "#notes", label: "Notes" },

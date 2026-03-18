@@ -1,10 +1,9 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
 
-export type Currency = "INR" | "AUD";
+import { INR_TO_AUD } from "../lib/costs";
 
-// Approximate conversion rate: 1 AUD ≈ 65 INR (as of March 2026)
-const INR_TO_AUD = 1 / 65;
+export type Currency = "INR" | "AUD";
 
 interface CurrencyContextType {
   currency: Currency;
