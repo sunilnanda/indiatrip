@@ -166,7 +166,7 @@ export default function TotalCost() {
               )}
               {currency === "AUD" && (
                 <p className="text-white/60 text-[10px] sm:text-xs mt-0.5">
-                  ≈ ₹{totalLow.toLocaleString()} – ₹{totalHigh.toLocaleString()}
+                  ≈ {totalLow === totalHigh ? `₹${totalLow.toLocaleString()}` : `₹${totalLow.toLocaleString()} – ₹${totalHigh.toLocaleString()}`}
                 </p>
               )}
             </div>

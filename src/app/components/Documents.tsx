@@ -1,8 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
-import { FileText, Download, Plane, Train, AlertTriangle, ShieldCheck, Stamp, Ticket } from "lucide-react";
+import { FileText, Download, Plane, Train, AlertTriangle, ShieldCheck, Stamp, Ticket, CreditCard } from "lucide-react";
 
-type DocType = "flight" | "train" | "e-ticket" | "passport" | "visa";
+type DocType = "flight" | "train" | "e-ticket" | "passport" | "visa" | "id";
 
 interface Document {
     id: string;
@@ -23,6 +23,7 @@ const typeConfig: Record<DocType, { icon: typeof Plane; color: string; bg: strin
     "e-ticket": { icon: Ticket, color: "text-indigo-500", bg: "bg-indigo-50", label: "International Flights" },
     passport: { icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50", label: "Passports" },
     visa: { icon: Stamp, color: "text-purple-500", bg: "bg-purple-50", label: "Visas" },
+    id: { icon: CreditCard, color: "text-cyan-600", bg: "bg-cyan-50", label: "Aadhaar / ID" },
 };
 
 const documents: Document[] = [
@@ -143,6 +144,22 @@ const documents: Document[] = [
         person: "Ryaan",
         fileName: "Ryaan-Passport-Expired.pdf",
     },
+    {
+        id: "passport-ashok",
+        title: "Ashok Nanda — Indian Passport",
+        subtitle: "Sunil's Dad",
+        type: "passport",
+        person: "Ashok Nanda",
+        fileName: "ASHOK NANDA-Passport.pdf",
+    },
+    {
+        id: "passport-anita",
+        title: "Anita Nanda — Indian Passport",
+        subtitle: "Sunil's Mom",
+        type: "passport",
+        person: "Anita Nanda",
+        fileName: "ANITA NANDA-Passport.pdf",
+    },
     // Visas
     {
         id: "visa-sunil",
@@ -176,9 +193,34 @@ const documents: Document[] = [
         person: "Ryaan",
         fileName: "Visa-Ryaan.pdf",
     },
+    // Aadhaar / ID
+    {
+        id: "aadhaar-sunil",
+        title: "Sunil — Aadhaar (Masked)",
+        subtitle: "e-Aadhaar",
+        type: "id",
+        person: "Sunil",
+        fileName: "Sunil-EAadhaar__masked.pdf",
+    },
+    {
+        id: "aadhaar-sunil-unmasked",
+        title: "Sunil — Aadhaar (Unmasked)",
+        subtitle: "e-Aadhaar · Full details",
+        type: "id",
+        person: "Sunil",
+        fileName: "Sunil-EAadhaar__unmasked.pdf",
+    },
+    {
+        id: "aadhaar-parul",
+        title: "Parul — Aadhaar",
+        subtitle: "Aadhaar card",
+        type: "id",
+        person: "Parul",
+        fileName: "Adhaar - Parul.jpg",
+    },
 ];
 
-const groupOrder: DocType[] = ["e-ticket", "flight", "train", "passport", "visa"];
+const groupOrder: DocType[] = ["e-ticket", "flight", "train", "passport", "visa", "id"];
 
 export default function Documents() {
     const grouped = groupOrder
@@ -231,7 +273,7 @@ export default function Documents() {
                             </div>
 
                             {/* Compact grid for passports/visas, full cards for tickets */}
-                            {type === "passport" || type === "visa" ? (
+                            {type === "passport" || type === "visa" || type === "id" ? (
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                                     {docs.map((doc) => {
                                         const Icon = config.icon;
